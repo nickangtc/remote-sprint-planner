@@ -1,0 +1,37 @@
+{
+  "name": "remote-sprint-planner",
+  "version": "0.0.1",
+  "description": "A little app to make remote sprint backlog estimation sessions more efficient and fun.",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickangtc/remote-sprint-planner.git"
+  },
+  "keywords": [
+    "sprint-planning",
+    "kanban",
+    "story-points"
+  ],
+  "author": "Nick Ang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nickangtc/remote-sprint-planner/issues"
+  },
+  "homepage": "https://github.com/nickangtc/remote-sprint-planner#readme",
+  "devDependencies": {
+    "eslint": "^7.3.1",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-prettier": "3.1.4",
+    "prettier": "2.0.5"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "http-errors": "^1.7.3",
+    "morgan": "^1.10.0"
+  }
+}
