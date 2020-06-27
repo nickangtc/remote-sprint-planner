@@ -2,15 +2,28 @@ const createError = require('http-errors')
 const express = require('express')
 const path = require('path')
 const logger = require('morgan')
+const events = require('events')
 
 const indexRouter = require('./routes/routes-index')
 
 const app = express()
 
 app.use(logger('dev'))
-app.use(express.json())
+app.use(express.json({ limit: '10mb', extended: true}))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
+
+// client connections for server sent events (EventSource API)
+app.locals.connections = []
+
+const { EventEmitter } = events
+app.locals.eventEmitter = new EventEmitter()
+// app.use((req, res, next) => {
+//     // setup emitevent.on('userjoin')
+//     // setup emitevent.on('userexit')
+//     // setup emitevent.on('uservote')
+//     next()
+// })
 
 app.use('/', indexRouter)
 

@@ -12,7 +12,6 @@
         "ecmaVersion": 11
     },
     "rules": {
-        "semi": "off",
-        "prettier-prettier": "error"
+        "semi": "off"
     }
 }
