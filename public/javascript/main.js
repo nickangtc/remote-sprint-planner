@@ -1,4 +1,4 @@
-const evtSource = new EventSource('/events')
+const evtSource = new EventSource('/events/subscribe')
 
 evtSource.onerror = function onerror(err) {
     console.error('EventSource failed:', err)

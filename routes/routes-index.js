@@ -1,7 +1,13 @@
 const express = require('express')
-const app = require('../app')
 
 const router = express.Router()
+
+// app.use((req, res, next) => {
+//     // setup emitevent.on('userjoin')
+//     // setup emitevent.on('userexit')
+//     // setup emitevent.on('uservote')
+//     next()
+// })
 
 const sseHeaders = {
     'Content-Type': 'text/event-stream',
@@ -13,7 +19,7 @@ router.get('/', function root(req, res) {
     res.render('index.html')
 })
 
-router.get('/events', async function events(req, res) {
+router.get('/events/subscribe', async function events(req, res) {
     const { connections, eventEmitter } = req.app.locals
     res.set(sseHeaders)
     res.flushHeaders()
@@ -29,7 +35,7 @@ router.get('/events', async function events(req, res) {
     // store connection to emit events to later on
     connections.push(res)
 
-    // close event triggered by eventSource.close() on client side
+    // when client triggers EventSource.close(), delete connection
     req.on('close', () => {
         console.log('!!! connection closed !!!')
 
@@ -43,9 +49,10 @@ router.get('/events', async function events(req, res) {
 router.post('/vote', function (req, res) {
     const { connections, eventEmitter } = req.app.locals
 
-    connections.forEach((conn) => {
-        conn.write(`event: userVote\n`)
-        conn.write(`data: ${JSON.stringify(req.body)}\n\n`)
+    // TODO - replace with eventEmitter.emit('uservote', data)
+    connections.forEach((cnt) => {
+        cnt.write(`event: userVote\n`)
+        cnt.write(`data: ${JSON.stringify(req.body)}\n\n`)
     })
 })
 

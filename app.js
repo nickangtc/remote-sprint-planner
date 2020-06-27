@@ -9,7 +9,7 @@ const indexRouter = require('./routes/routes-index')
 const app = express()
 
 app.use(logger('dev'))
-app.use(express.json({ limit: '10mb', extended: true}))
+app.use(express.json({ limit: '10mb', extended: true }))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
@@ -18,12 +18,6 @@ app.locals.connections = []
 
 const { EventEmitter } = events
 app.locals.eventEmitter = new EventEmitter()
-// app.use((req, res, next) => {
-//     // setup emitevent.on('userjoin')
-//     // setup emitevent.on('userexit')
-//     // setup emitevent.on('uservote')
-//     next()
-// })
 
 app.use('/', indexRouter)
 
