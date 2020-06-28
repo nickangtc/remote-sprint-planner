@@ -2,9 +2,9 @@ const createError = require('http-errors')
 const express = require('express')
 const path = require('path')
 const logger = require('morgan')
-const events = require('events')
 
-const indexRouter = require('./routes/routes-index')
+const indexRouter = require('./routes/index-routes')
+const roomsRouter = require('./routes/rooms-routes')
 
 const app = express()
 
@@ -16,10 +16,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 // client connections for server sent events (EventSource API)
 app.locals.connections = []
 
-const { EventEmitter } = events
-app.locals.eventEmitter = new EventEmitter()
-
 app.use('/', indexRouter)
+app.use('/rooms', roomsRouter)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

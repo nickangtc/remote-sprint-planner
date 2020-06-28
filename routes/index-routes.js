@@ -2,13 +2,6 @@ const express = require('express')
 
 const router = express.Router()
 
-// app.use((req, res, next) => {
-//     // setup emitevent.on('userjoin')
-//     // setup emitevent.on('userexit')
-//     // setup emitevent.on('uservote')
-//     next()
-// })
-
 const sseHeaders = {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
@@ -20,17 +13,12 @@ router.get('/', function root(req, res) {
 })
 
 router.get('/events/subscribe', async function events(req, res) {
-    const { connections, eventEmitter } = req.app.locals
+    const { connections } = req.app.locals
     res.set(sseHeaders)
     res.flushHeaders()
 
     // Tell the client to retry every 10 seconds if connectivity is lost
     res.write('retry: 10000\n\n')
-
-    // eventEmitter.emit(
-    //     'userjoin',
-    //     'hard coded data, but should be username + sprint room info'
-    // )
 
     // store connection to emit events to later on
     connections.push(res)
@@ -47,9 +35,8 @@ router.get('/events/subscribe', async function events(req, res) {
 })
 
 router.post('/vote', function (req, res) {
-    const { connections, eventEmitter } = req.app.locals
+    const { connections } = req.app.locals
 
-    // TODO - replace with eventEmitter.emit('uservote', data)
     connections.forEach((cnt) => {
         cnt.write(`event: userVote\n`)
         cnt.write(`data: ${JSON.stringify(req.body)}\n\n`)
