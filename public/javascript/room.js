@@ -1,4 +1,6 @@
-const evtSource = new EventSource('/events/subscribe')
+const idRegex = /\/rooms\/(.*)\//
+const id = window.location.pathname.match(idRegex)
+const evtSource = new EventSource(`/rooms/${id}/subscribe`)
 
 evtSource.onerror = function onerror(err) {
     console.error('EventSource failed:', err)
@@ -7,7 +9,7 @@ evtSource.onerror = function onerror(err) {
 // when user closes the browser tab / etc, close event source
 // evtSource.close()
 
-evtSource.addEventListener('userVote', (event) => {
+evtSource.addEventListener('vote', (event) => {
     const newElement = document.createElement('li')
     const eventList = document.getElementById('list')
     newElement.innerHTML = `${event.data}`
