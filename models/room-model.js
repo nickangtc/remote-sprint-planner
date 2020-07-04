@@ -1,12 +1,40 @@
 const BaseModel = require('./base-model')
 const User = require('./user-model')
-const utils = require('../utils/misc-utils')
 
 class Room extends BaseModel {
-    constructor(roomName) {
+    constructor(name) {
         super()
+
+        if (!name) {
+            throw new Error('room needs to be instantiated with a name')
+        }
+
         this.users = []
-        this.roomName = roomName || utils.generateRandomName()
+        this.name = name
+    }
+
+    static initRoomsPool() {
+        if (!Room.rooms) {
+            Room.rooms = []
+        }
+    }
+
+    static createOrGetByName(name) {
+        Room.initRoomsPool()
+
+        const existing = Room.rooms.find((r) => r.name === name)
+
+        if (existing) {
+            return existing
+        }
+
+        const created = new Room(name)
+        Room.rooms.push(created)
+        return created
+    }
+
+    static getRooms() {
+        return Room.rooms
     }
 
     validateUser(user) {

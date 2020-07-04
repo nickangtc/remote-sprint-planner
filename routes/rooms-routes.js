@@ -1,4 +1,8 @@
 const express = require('express')
+const _ = require('lodash')
+
+const Room = require('../models/room-model')
+const utils = require('../utils/misc-utils')
 
 const router = express.Router()
 
@@ -57,7 +61,15 @@ router.get('/:roomId/subscribe', async function events(req, res) {
 
 router.post('/', function postRoom(req, res) {
     console.log('req.body:', JSON.stringify(req.body, null, 4))
-    res.redirect(`/rooms/${req.body['room-name']}`)
+
+    const roomName = _.isEmpty(req.body['room-name'])
+        ? utils.generateRandomName()
+        : req.body['room-name']
+
+    const room = Room.createOrGetByName(roomName)
+    console.log('room.name:', room.name)
+    console.log('room.id:', room.id)
+    res.redirect(`/rooms/${room.id}`)
 })
 
 router.get('/:roomId', function getRoom(req, res) {

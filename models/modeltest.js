@@ -1,7 +1,8 @@
 const Room = require('./room-model')
 const User = require('./user-model')
 
-const room1 = new Room()
+// const room1 = new Room('cool room')
+const room1 = Room.createOrGetByName('cool room')
 console.log('room1:', room1)
 
 const user1 = new User('nick')
@@ -17,3 +18,5 @@ console.log('room1.getUsers():', room1.getUsers())
 
 room1.removeUserById(user2.id)
 console.log('room1.getUsers():', room1.getUsers())
+
+console.log('Room.getRooms():', Room.getRooms())
