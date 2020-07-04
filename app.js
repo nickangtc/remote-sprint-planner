@@ -14,6 +14,8 @@ app.use(express.json({ limit: '10mb', extended: true }))
 app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
+app.set('view engine', 'hbs')
+
 // client connections for server sent events (EventSource API)
 app.locals.cPool = new ConnectionsPool()
 

@@ -73,8 +73,10 @@ router.post('/', function postRoom(req, res) {
 })
 
 router.get('/:roomId', function getRoom(req, res) {
+    const { roomId } = req.params
+
     // TODO: Check if roomId exists - if not, redirect to homepage
-    res.sendFile('room.html', { root: `${process.cwd()}/public` })
+    res.render('room', { id: roomId, name: 'fakename123' })
 })
 
 module.exports = router
