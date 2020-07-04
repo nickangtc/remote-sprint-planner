@@ -3,6 +3,7 @@ const _ = require('lodash')
 
 const Room = require('../models/room-model')
 const utils = require('../utils/misc-utils')
+const User = require('../models/user-model')
 
 const router = express.Router()
 
@@ -12,16 +13,25 @@ const sseHeaders = {
     Connection: 'keep-alive',
 }
 
-// TODO: create or reject username in this room
 // TODO: decide how to store Usernames in a room
 // TODO: decide also how to store Votes in a room
 router.post('/:roomId/users', function (req, res) {
-    // const { roomId } = req.params
-    // const { cPool } = req.app.locals
+    const { username } = req.body
+    const { roomId } = req.params
 
-    res.json({
-        status: 'OK',
-    })
+    console.log('username:', username)
+
+    // TODO: create or reject username in this room
+    const room = Room.getById(roomId)
+    try {
+        room.addUser(new User(username))
+        res.statusMessage = 'OK'
+        res.status(200).end()
+    } catch (err) {
+        res.statusMessage =
+            'Error: That username is already taken. Try with different one.'
+        res.status(403).end()
+    }
 })
 
 router.post('/:roomId/votes', function (req, res) {

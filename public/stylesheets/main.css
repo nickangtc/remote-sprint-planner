@@ -1,3 +1,13 @@
 .hidden {
   display: none;
 }
+
+#user-message-box {
+  color: red;
+}
+
+#username {
+  background-color: blue;
+  border-radius: 99rem;
+  display: inline-block;
+}

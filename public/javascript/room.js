@@ -22,24 +22,8 @@ async function postUser(username) {
         referrerPolicy: 'no-referrer',
         body: JSON.stringify(data),
     })
-    return response.json()
+    return response
 }
-
-const evtSource = new EventSource(`/rooms/${id}/subscribe`)
-
-evtSource.onerror = function onerror(err) {
-    console.error('EventSource failed:', err)
-}
-
-// when user closes the browser tab / etc, close event source
-// evtSource.close()
-
-evtSource.addEventListener('vote', (event) => {
-    const newElement = document.createElement('li')
-    const eventList = document.getElementById('list')
-    newElement.innerHTML = `${event.data}`
-    eventList.appendChild(newElement)
-})
 
 // vote code
 async function postVote(username, votevalue) {
@@ -64,16 +48,51 @@ async function postVote(username, votevalue) {
     return response.json()
 }
 
+function connect() {
+    const evtSource = new EventSource(`/rooms/${id}/subscribe`)
+
+    evtSource.onerror = function onerror(err) {
+        console.error('EventSource failed:', err)
+    }
+
+    // when user closes the browser tab / etc, close event source
+    // evtSource.close()
+
+    evtSource.addEventListener('vote', (event) => {
+        const newElement = document.createElement('li')
+        const eventList = document.getElementById('list')
+        newElement.innerHTML = `${event.data}`
+        eventList.appendChild(newElement)
+    })
+}
+
+function displayUserMessage(message) {
+    const userMessageBox = document.querySelector('#user-message-box')
+    userMessageBox.textContent = message
+}
+
 window.addEventListener('DOMContentLoaded', () => {
     const usernameForm = document.querySelector('#username-form')
+    const usernameUiElement = document.querySelector('#username')
 
-    usernameForm.addEventListener('submit', function (evt) {
+    usernameForm.addEventListener('submit', async function (evt) {
         evt.preventDefault()
         const { target } = evt
         // this is the most direct and readable code to access a form's specific input element's value
         const username = target.elements.username.value
-        
-        postUser(username)
+
+        const res = await postUser(username)
+
+        if (res.status === 403) {
+            displayUserMessage(res.statusText)
+        } else {
+            displayUserMessage('')
+
+            connect()
+
+            usernameForm.classList.add('hidden')
+            usernameUiElement.textContent = username
+        }
     })
 
     const buttons = document.querySelectorAll('#vote-buttons button')
