@@ -1,6 +1,30 @@
 const idRegex = /\/rooms\/(.*)/
 const id = window.location.pathname.match(idRegex)[1]
 console.log('id:', id)
+
+// get user-name input
+// check with server if name is taken
+// if not, proceed
+// if yes, prompt user for new user-name
+async function postUser(username) {
+    const url = `${id}/users`
+    const data = { username }
+
+    const response = await fetch(url, {
+        method: 'POST',
+        mode: 'cors',
+        cache: 'no-cache',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        redirect: 'follow',
+        referrerPolicy: 'no-referrer',
+        body: JSON.stringify(data),
+    })
+    return response.json()
+}
+
 const evtSource = new EventSource(`/rooms/${id}/subscribe`)
 
 evtSource.onerror = function onerror(err) {
@@ -19,7 +43,7 @@ evtSource.addEventListener('vote', (event) => {
 
 // vote code
 async function postVote(username, votevalue) {
-    const url = `${id}/vote`
+    const url = `${id}/votes`
     const data = {
         username,
         votevalue,
@@ -41,7 +65,18 @@ async function postVote(username, votevalue) {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-    const buttons = document.querySelectorAll('button')
+    const usernameForm = document.querySelector('#username-form')
+
+    usernameForm.addEventListener('submit', function (evt) {
+        evt.preventDefault()
+        const { target } = evt
+        // this is the most direct and readable code to access a form's specific input element's value
+        const username = target.elements.username.value
+        
+        postUser(username)
+    })
+
+    const buttons = document.querySelectorAll('#vote-buttons button')
 
     buttons.forEach((btn) =>
         btn.addEventListener('click', (ev) => {

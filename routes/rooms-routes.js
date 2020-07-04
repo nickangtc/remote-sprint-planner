@@ -8,7 +8,19 @@ const sseHeaders = {
     Connection: 'keep-alive',
 }
 
-router.post('/:roomId/vote', function (req, res) {
+// TODO: create or reject username in this room
+// TODO: decide how to store Usernames in a room
+// TODO: decide also how to store Votes in a room
+router.post('/:roomId/users', function (req, res) {
+    // const { roomId } = req.params
+    // const { cPool } = req.app.locals
+
+    res.json({
+        status: 'OK',
+    })
+})
+
+router.post('/:roomId/votes', function (req, res) {
     const { roomId } = req.params
     const { cPool } = req.app.locals
 
@@ -32,10 +44,8 @@ router.get('/:roomId/subscribe', async function events(req, res) {
     // Tell the client to retry every 10 seconds if connectivity is lost
     res.write('retry: 10000\n\n')
 
-    // store connection to emit events to later on
     cPool.addConnection(roomId, res)
 
-    // when client triggers EventSource.close(), delete connection
     req.on('close', () => {
         console.log('a connection closed')
         cPool.removeConnection(roomId, res)
