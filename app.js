@@ -21,6 +21,9 @@ app.locals.cPool = new ConnectionsPool()
 
 app.use('/', indexRouter)
 app.use('/rooms', roomsRouter)
+app.use('*', function (req, res) {
+    res.send('sorry, the only thing found here are these numbers: 404')
+})
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
