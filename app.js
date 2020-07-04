@@ -5,7 +5,7 @@ const logger = require('morgan')
 
 const indexRouter = require('./routes/index-routes')
 const roomsRouter = require('./routes/rooms-routes')
-const { ConnectionsPool } = require('./controllers/rooms-controllers')
+const { ConnectionsPool } = require('./models/connections-pool')
 
 const app = express()
 
