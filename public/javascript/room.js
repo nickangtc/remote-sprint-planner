@@ -1,5 +1,6 @@
-const idRegex = /\/rooms\/(.*)\//
-const id = window.location.pathname.match(idRegex)
+const idRegex = /\/rooms\/(.*)/
+const id = window.location.pathname.match(idRegex)[1]
+console.log('id:', id)
 const evtSource = new EventSource(`/rooms/${id}/subscribe`)
 
 evtSource.onerror = function onerror(err) {
@@ -18,7 +19,7 @@ evtSource.addEventListener('vote', (event) => {
 
 // vote code
 async function postVote(username, votevalue) {
-    const url = '/vote'
+    const url = `${id}/vote`
     const data = {
         username,
         votevalue,

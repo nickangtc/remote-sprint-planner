@@ -5,6 +5,7 @@ const logger = require('morgan')
 
 const indexRouter = require('./routes/index-routes')
 const roomsRouter = require('./routes/rooms-routes')
+const { ConnectionsPool } = require('./controllers/rooms-controllers')
 
 const app = express()
 
@@ -14,7 +15,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, 'public')))
 
 // client connections for server sent events (EventSource API)
-app.locals.connections = []
+app.locals.cPool = new ConnectionsPool()
 
 app.use('/', indexRouter)
 app.use('/rooms', roomsRouter)

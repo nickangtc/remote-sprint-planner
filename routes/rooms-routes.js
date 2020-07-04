@@ -8,27 +8,41 @@ const sseHeaders = {
     Connection: 'keep-alive',
 }
 
-router.get('/:id/subscribe', async function events(req, res) {
-    const { connections } = req.app.locals
+router.post('/:roomId/vote', function (req, res) {
+    const { roomId } = req.params
+    const { cPool } = req.app.locals
+
+    const cnts = cPool.getConnections(roomId)
+
+    cnts.forEach((cnt) => {
+        cnt.write(`event: vote\n`)
+        cnt.write(`data: ${JSON.stringify(req.body)}\n\n`)
+    })
+    res.json({
+        status: 'OK',
+    })
+})
+
+router.get('/:roomId/subscribe', async function events(req, res) {
+    const { roomId } = req.params
+    const { cPool } = req.app.locals
     res.set(sseHeaders)
     res.flushHeaders()
 
     // Tell the client to retry every 10 seconds if connectivity is lost
     res.write('retry: 10000\n\n')
 
-    // TODO: separate connections based on roomid -> only subscribe to roomid's events
     // store connection to emit events to later on
-    connections.push(res)
+    cPool.addConnection(roomId, res)
 
     // when client triggers EventSource.close(), delete connection
     req.on('close', () => {
-        console.log('!!! connection closed !!!')
-
-        const id = connections.indexOf(res)
-        connections.splice(id, 1)
+        console.log('a connection closed')
+        cPool.removeConnection(roomId, res)
     })
 
-    console.log('connections.length:', connections.length)
+    const roomConnections = cPool.getConnections(roomId)
+    console.log('roomConnections.length:', roomConnections.length)
 })
 
 router.post('/', function postRoom(req, res) {
@@ -36,7 +50,7 @@ router.post('/', function postRoom(req, res) {
     res.redirect(`/rooms/${req.body.sprintname}`)
 })
 
-router.get('/:id', function getRoom(req, res) {
+router.get('/:roomId', function getRoom(req, res) {
     res.sendFile('room.html', { root: `${process.cwd()}/public` })
 })
 
