@@ -57,10 +57,11 @@ router.get('/:roomId/subscribe', async function events(req, res) {
 
 router.post('/', function postRoom(req, res) {
     console.log('req.body:', JSON.stringify(req.body, null, 4))
-    res.redirect(`/rooms/${req.body.sprintname}`)
+    res.redirect(`/rooms/${req.body['room-name']}`)
 })
 
 router.get('/:roomId', function getRoom(req, res) {
+    // TODO: Check if roomId exists - if not, redirect to homepage
     res.sendFile('room.html', { root: `${process.cwd()}/public` })
 })
 

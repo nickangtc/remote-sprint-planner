@@ -1,10 +1,12 @@
 const BaseModel = require('./base-model')
 const User = require('./user-model')
+const utils = require('../utils/misc-utils')
 
 class Room extends BaseModel {
-    constructor() {
+    constructor(roomName) {
         super()
         this.users = []
+        this.roomName = roomName || utils.generateRandomName()
     }
 
     validateUser(user) {
