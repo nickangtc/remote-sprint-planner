@@ -33,8 +33,11 @@ class Room extends BaseModel {
         return created
     }
 
-    static getRooms() {
-        return Room.rooms
+    static getById(id) {
+        Room.initRoomsPool()
+
+        const room = Room.rooms.find((r) => r.id === id)
+        return room
     }
 
     validateUser(user) {

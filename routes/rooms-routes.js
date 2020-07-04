@@ -67,16 +67,19 @@ router.post('/', function postRoom(req, res) {
         : req.body['room-name']
 
     const room = Room.createOrGetByName(roomName)
-    console.log('room.name:', room.name)
-    console.log('room.id:', room.id)
+
     res.redirect(`/rooms/${room.id}`)
 })
 
 router.get('/:roomId', function getRoom(req, res) {
     const { roomId } = req.params
+    const room = Room.getById(roomId)
 
-    // TODO: Check if roomId exists - if not, redirect to homepage
-    res.render('room', { id: roomId, name: 'fakename123' })
+    if (!room) {
+        res.redirect('/')
+    } else {
+        res.render('room', { id: room.id, name: room.name })
+    }
 })
 
 module.exports = router
