@@ -74,22 +74,18 @@ function displayEphemeralMessage(message) {
 function displayUsersOnlineList(usernames) {
     const usersOnlineList = document.querySelector('#users-online-list')
 
-    const ul = document.createElement('ul')
+    usersOnlineList.innerHTML = ''
 
     usernames.forEach((username) => {
         const li = document.createElement('li')
         li.classList.add('badge', 'badge-pill', 'badge-info')
         li.textContent = username
-        ul.append(li)
+        usersOnlineList.append(li)
     })
-
-    usersOnlineList.innerHTML = ''
-    usersOnlineList.append(ul)
 }
 
 window.addEventListener('DOMContentLoaded', () => {
     const usernameForm = document.querySelector('#username-form')
-    const usernameUiElement = document.querySelector('#username')
     const userSignupUiGroup = document.querySelector('#user-signup-ui-group')
     const usersOnlineUiGroup = document.querySelector('#users-online-ui-group')
     const voteUiGroup = document.querySelector('#vote-ui-group')
@@ -115,7 +111,6 @@ window.addEventListener('DOMContentLoaded', () => {
             displayUsersOnlineList(usersOnline.map((usr) => usr.username))
 
             usernameForm.classList.add('d-none')
-            usernameUiElement.textContent = username
 
             userSignupUiGroup.classList.remove('d-none')
             usersOnlineUiGroup.classList.remove('d-none')

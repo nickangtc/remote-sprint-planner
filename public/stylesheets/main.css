@@ -2,6 +2,15 @@
   color: red;
 }
 
+#users-online-list {
+  padding-left: 0;
+}
+
+#users-online-list li {
+  margin-right: 1rem;
+  min-width: 3rem;
+}
+
 @keyframes fade {
   0% { opacity: 0 }
   100% { opacity: 1 }
