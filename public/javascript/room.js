@@ -90,7 +90,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             connect()
 
-            usernameForm.classList.add('hidden')
+            usernameForm.classList.add('d-none')
             usernameUiElement.textContent = username
         }
     })
