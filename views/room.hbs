@@ -12,33 +12,56 @@
   <script type="text/javascript" src="/javascript/room.js"></script>
 </head>
 <body>
-    <div id="user-message-box"></div>
-    <h1>Sprint planning room: {{ name }}</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col">
+          <div id="user-message-box"></div>
+          <h1>Sprint: {{ name }}</h1>
+        </div>
+      </div>
 
-    <form id="username-form">
-      <input name="username" placeholder="e.g. Nick">
-      <button type="submit">→</button>
-    </form>
+      <div class="row">
+        <div class="col">
+          <form id="username-form">
+            <div class="form-group">
+              <label for="username">Tell everyone your name</label>
+              <input class="form-control" name="username" placeholder="e.g. Nick">
+              <button class="btn btn-primary" type="submit">Join Sprint →</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
-    <p>
-      You are: <div id="username"></div>
-    </p>
+      <div class="row">
+        <div class="col">
+          <p>
+            You are: <div id="username"></div>
+          </p>
 
-    <p>Active now:</p>
-    <ul id="userslist">
-      <li>Nick (hardcoded)</li>
-    </ul>
+          <p>Active now:</p>
+          <ul id="userslist">
+            <li>Nick (hardcoded)</li>
+          </ul>
+        </div>
+      </div>
 
-    <h2>My vote</h2>
-    <div id="vote-buttons">
-      <button data-votevalue="1">1</button>
-      <button data-votevalue="2">2</button>
-      <button data-votevalue="3">3</button>
-      <button data-votevalue="5">5</button>
-      <button data-votevalue="8">8</button>
-      <button data-votevalue="13">13</button>
-      <button data-votevalue="21">21</button>
+      <div class="row">
+        <div class="col">
+          <h2>My vote</h2>
+          <div id="vote-buttons">
+            <button class="btn btn-lg btn-primary" data-votevalue="1">1</button>
+            <button class="btn btn-lg btn-primary" data-votevalue="2">2</button>
+            <button class="btn btn-lg btn-primary" data-votevalue="3">3</button>
+            <button class="btn btn-lg btn-primary" data-votevalue="5">5</button>
+            <button class="btn btn-lg btn-primary" data-votevalue="8">8</button>
+            <button class="btn btn-lg btn-primary" data-votevalue="13">13</button>
+            <button class="btn btn-lg btn-primary" data-votevalue="21">21</button>
+          </div>
+          <ul id="list"></ul>
+        </div>
+      </div>
     </div>
-    <ul id="list"></ul>
+
+   
 </body>
 </html>

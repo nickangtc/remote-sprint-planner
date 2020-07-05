@@ -12,12 +12,21 @@
   <script type="text/javascript" src="javascript/index.js"></script>
 </head>
 <body>
-  <h2>Landing screen @ /</h2>
-  <button id="start">Start</button>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <h2>Landing screen @ /</h2>
+        <button class="btn btn-primary" id="start">Get started</button>
 
-  <form action="/rooms" method="POST" id="sprint-name-form" class="hidden">
-    <input name="room-name" placeholder="e.g. Service Ops sprint 10.06.2020">
-    <button type="submit">→</button>
-  </form>
+        <form action="/rooms" method="POST" id="sprint-name-form" class="hidden">
+          <div class="form-group">
+            <label for="room-name">Start with a sprint name</label>
+            <input class="form-control" name="room-name" placeholder="e.g. Service Ops sprint 10.06.2020">
+          </div>
+          <button class="btn btn-primary" type="submit">Next →</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

@@ -12,7 +12,7 @@ const http = require('http')
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000')
+const port = normalizePort(process.env.PORT || '8000')
 app.set('port', port)
 
 /**
@@ -83,5 +83,5 @@ function onListening() {
     const addr = server.address()
     const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`
     debug(`Listening on ${bind}`)
-    console.log('listening on http://localhost:3000')
+    console.log('listening on http://localhost:8000')
 }
