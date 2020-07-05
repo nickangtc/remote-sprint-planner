@@ -74,8 +74,13 @@ function displayUserMessage(message) {
 window.addEventListener('DOMContentLoaded', () => {
     const usernameForm = document.querySelector('#username-form')
     const usernameUiElement = document.querySelector('#username')
+    const userSignupUiGroup = document.querySelector('#user-signup-ui-group')
+    const usersOnlineUiGroup = document.querySelector('#users-online-ui-group')
+    const voteUiGroup = document.querySelector('#vote-ui-group')
 
-    usernameForm.addEventListener('submit', async function (evt) {
+    usernameForm.addEventListener('submit', async function submitUsernameForm(
+        evt
+    ) {
         evt.preventDefault()
         const { target } = evt
         // this is the most direct and readable code to access a form's specific input element's value
@@ -92,6 +97,10 @@ window.addEventListener('DOMContentLoaded', () => {
 
             usernameForm.classList.add('d-none')
             usernameUiElement.textContent = username
+
+            userSignupUiGroup.classList.remove('d-none')
+            usersOnlineUiGroup.classList.remove('d-none')
+            voteUiGroup.classList.remove('d-none')
         }
     })
 
