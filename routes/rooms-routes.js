@@ -13,20 +13,17 @@ const sseHeaders = {
     Connection: 'keep-alive',
 }
 
-// TODO: decide how to store Usernames in a room
 // TODO: decide also how to store Votes in a room
 router.post('/:roomId/users', function (req, res) {
     const { username } = req.body
     const { roomId } = req.params
 
-    console.log('username:', username)
-
-    // TODO: create or reject username in this room
     const room = Room.getById(roomId)
     try {
         room.addUser(new User(username))
         res.statusMessage = 'OK'
-        res.status(200).end()
+        res.status(200)
+        res.json(room.users)
     } catch (err) {
         res.statusMessage =
             'Error: That username is already taken. Try with different one.'
@@ -70,8 +67,6 @@ router.get('/:roomId/subscribe', async function events(req, res) {
 })
 
 router.post('/', function postRoom(req, res) {
-    console.log('req.body:', JSON.stringify(req.body, null, 4))
-
     const roomName = _.isEmpty(req.body['room-name'])
         ? utils.generateRandomName()
         : req.body['room-name']

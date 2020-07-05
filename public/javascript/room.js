@@ -66,9 +66,25 @@ function connect() {
     })
 }
 
-function displayUserMessage(message) {
+function displayEphemeralMessage(message) {
     const userMessageBox = document.querySelector('#user-message-box')
     userMessageBox.textContent = message
+}
+
+function displayUsersOnlineList(usernames) {
+    const usersOnlineList = document.querySelector('#users-online-list')
+
+    const ul = document.createElement('ul')
+
+    usernames.forEach((username) => {
+        const li = document.createElement('li')
+        li.classList.add('badge', 'badge-pill', 'badge-info')
+        li.textContent = username
+        ul.append(li)
+    })
+
+    usersOnlineList.innerHTML = ''
+    usersOnlineList.append(ul)
 }
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -89,11 +105,14 @@ window.addEventListener('DOMContentLoaded', () => {
         const res = await postUser(username)
 
         if (res.status === 403) {
-            displayUserMessage(res.statusText)
+            displayEphemeralMessage(res.statusText)
         } else {
-            displayUserMessage('')
-
             connect()
+
+            displayEphemeralMessage('')
+
+            const usersOnline = await res.json()
+            displayUsersOnlineList(usersOnline.map((usr) => usr.username))
 
             usernameForm.classList.add('d-none')
             usernameUiElement.textContent = username
