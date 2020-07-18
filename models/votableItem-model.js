@@ -5,13 +5,10 @@ class VotableItem extends BaseModel {
         super()
 
         if (!name) {
-            throw new Error('room needs to be instantiated with a name')
+            throw new Error('votableItem needs to be instantiated with a name')
         }
 
-        // item has name
-        // item has votes casted by users
         // item belongs to a room -> no need to store in votableItem ?
-
         this.name = name
         this.votes = []
         this.aggregatedVotes = {}
