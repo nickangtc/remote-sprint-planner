@@ -19,6 +19,10 @@ class Room extends BaseModel {
         }
     }
 
+    static resetRoomsPool() {
+        Room.rooms = []
+    }
+
     static createOrGetByName(name) {
         Room.initRoomsPool()
 
@@ -63,7 +67,7 @@ class Room extends BaseModel {
         const index = this.users.indexOf(user)
         const removed = this.users.splice(index, 1)
 
-        if (removed === -1) {
+        if (removed.length === 0) {
             throw new Error(`user with id ${userId} was not removed`)
         }
 
