@@ -26,7 +26,7 @@ router.post('/:roomId/users', function (req, res) {
         res.json(room.users)
     } catch (err) {
         res.statusMessage =
-            'Error: That username is already taken. Try with different one.'
+            'Error: That username is already taken. Try with a different one.'
         res.status(403).end()
     }
 })
