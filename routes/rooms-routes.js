@@ -19,6 +19,7 @@ router.post('/:roomId/users', function (req, res) {
     const { roomId } = req.params
 
     const room = Room.getById(roomId)
+
     try {
         room.addUser(new User(username))
         res.statusMessage = 'OK'

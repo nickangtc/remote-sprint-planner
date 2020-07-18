@@ -1,6 +1,8 @@
 {
     "env": {
-        "browser": true,
+        "browser": true, // ignore browser globals
+        "node": true, // ignore node globals
+        "mocha": true, // ignore mocha globals
         "es2020": true
     },
     "extends": [
