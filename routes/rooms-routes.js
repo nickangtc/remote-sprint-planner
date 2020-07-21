@@ -1,9 +1,8 @@
 const express = require('express')
 const _ = require('lodash')
 
-const Room = require('../models/room-model')
+const { User, Sprint, SprintItem } = require('../models')
 const utils = require('../utils/misc-utils')
-const User = require('../models/user-model')
 
 const router = express.Router()
 
@@ -13,18 +12,18 @@ const sseHeaders = {
     Connection: 'keep-alive',
 }
 
-// TODO: decide also how to store Votes in a room
+// TODO: decide also how to store Votes in a sprint
 router.post('/:roomId/users', function (req, res) {
     const { username } = req.body
     const { roomId } = req.params
 
-    const room = Room.getById(roomId)
+    const sprint = Sprint.getById(roomId)
 
     try {
-        room.addUser(new User(username))
+        sprint.addUser(new User(username))
         res.statusMessage = 'OK'
         res.status(200)
-        res.json(room.users)
+        res.json(sprint.users)
     } catch (err) {
         res.statusMessage =
             'Error: That username is already taken. Try with a different one.'
@@ -68,23 +67,23 @@ router.get('/:roomId/subscribe', async function events(req, res) {
 })
 
 router.post('/', function postRoom(req, res) {
-    const roomName = _.isEmpty(req.body['room-name'])
+    const roomName = _.isEmpty(req.body['sprint-name'])
         ? utils.generateRandomName()
-        : req.body['room-name']
+        : req.body['sprint-name']
 
-    const room = Room.createOrGetByName(roomName)
+    const sprint = Sprint.createOrGetByName(roomName)
 
-    res.redirect(`/rooms/${room.id}`)
+    res.redirect(`/sprints/${sprint.id}`)
 })
 
 router.get('/:roomId', function getRoom(req, res) {
     const { roomId } = req.params
-    const room = Room.getById(roomId)
+    const sprint = Sprint.getById(roomId)
 
-    if (!room) {
+    if (!sprint) {
         res.redirect('/')
     } else {
-        res.render('room', { id: room.id, name: room.name })
+        res.render('sprint', { id: sprint.id, name: sprint.name })
     }
 })
 

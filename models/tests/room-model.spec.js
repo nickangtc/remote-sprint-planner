@@ -1,16 +1,16 @@
 const assert = require('assert')
-const Room = require('../room-model')
+const Sprint = require('../sprint-model')
 const User = require('../user-model')
 
-describe('Room', function () {
-    describe('new Room()', function () {
+describe('Sprint', function () {
+    describe('new Sprint()', function () {
         it('throws error when instantiated without name', function () {
             assert.throws(
-                () => new Room(),
+                () => new Sprint(),
                 (err) => {
                     assert(err instanceof Error)
                     assert(
-                        /room needs to be instantiated with a name/.test(err)
+                        /sprint needs to be instantiated with a name/.test(err)
                     )
                     return true
                 }
@@ -18,24 +18,24 @@ describe('Room', function () {
         })
 
         it('instantiates with name', function () {
-            assert.doesNotThrow(() => new Room('foo'))
+            assert.doesNotThrow(() => new Sprint('foo'))
         })
     })
 
-    describe('instance room #addUser', function () {
-        let room = null
+    describe('instance sprint #addUser', function () {
+        let sprint = null
 
         beforeEach(() => {
-            room = new Room('foo')
+            sprint = new Sprint('foo')
         })
 
-        it('accepts User instance room as user', function () {
-            assert.doesNotThrow(() => room.addUser(new User('foobar')))
+        it('accepts User instance sprint as user', function () {
+            assert.doesNotThrow(() => sprint.addUser(new User('foobar')))
         })
 
         it('throws error when string as user', function () {
             assert.throws(
-                () => room.addUser('foobar'),
+                () => sprint.addUser('foobar'),
                 (err) => {
                     assert(err instanceof Error)
                     assert(/expected instanceof User/.test(err))
@@ -44,14 +44,14 @@ describe('Room', function () {
             )
         })
 
-        it('throws error when repeat username is detected in the same room', function () {
+        it('throws error when repeat username is detected in the same sprint', function () {
             const user1 = new User('bar')
             const user2 = new User('bar')
 
-            assert.doesNotThrow(() => room.addUser(user1))
+            assert.doesNotThrow(() => sprint.addUser(user1))
             assert.throws(
                 () => {
-                    room.addUser(user2)
+                    sprint.addUser(user2)
                 },
                 (err) => {
                     assert(err instanceof Error)
@@ -62,13 +62,13 @@ describe('Room', function () {
         })
     })
 
-    describe('instance room #getUsers', function () {
+    describe('instance sprint #getUsers', function () {
         it('returns array of User objects', function () {
-            const room = new Room('foo')
+            const sprint = new Sprint('foo')
             const userFoo = new User('foo')
-            room.addUser(userFoo)
+            sprint.addUser(userFoo)
 
-            const users = room.getUsers()
+            const users = sprint.getUsers()
 
             assert(users.length === 1)
             users.forEach((u) => {
@@ -76,33 +76,33 @@ describe('Room', function () {
             })
         })
         it('returns empty array when empty', function () {
-            const room = new Room('foo')
-            const actual = room.getUsers()
+            const sprint = new Sprint('foo')
+            const actual = sprint.getUsers()
 
             assert.deepStrictEqual(actual, [])
         })
     })
 
-    describe('instance room #removeUserById', function () {
-        const room = new Room('foo')
+    describe('instance sprint #removeUserById', function () {
+        const sprint = new Sprint('foo')
         const userFoo = new User('foo')
         const userBar = new User('bar')
 
         it('removes user with specified id if it exists', function () {
-            room.addUser(userFoo)
-            room.addUser(userBar)
-            assert(room.getUsers().length === 2)
+            sprint.addUser(userFoo)
+            sprint.addUser(userBar)
+            assert(sprint.getUsers().length === 2)
 
-            room.removeUserById(userFoo.id)
-            assert(room.getUsers().length === 1)
+            sprint.removeUserById(userFoo.id)
+            assert(sprint.getUsers().length === 1)
 
-            room.removeUserById(userBar.id)
-            assert(room.getUsers().length === 0)
+            sprint.removeUserById(userBar.id)
+            assert(sprint.getUsers().length === 0)
         })
 
-        it('throws error when user with specified id cannot be found in room', function () {
+        it('throws error when user with specified id cannot be found in sprint', function () {
             assert.throws(
-                () => room.removeUserById(userFoo.id),
+                () => sprint.removeUserById(userFoo.id),
                 (err) => {
                     assert(err instanceof Error)
                     assert(/was not removed/.test(err))
@@ -112,56 +112,56 @@ describe('Room', function () {
         })
     })
 
-    describe('class Room #createOrGetByName', function () {
+    describe('class Sprint #createOrGetByName', function () {
         beforeEach(() => {
-            Room.resetRoomsPool()
+            Sprint.resetRoomsPool()
         })
 
-        it('accepts string as room name', function () {
-            assert.doesNotThrow(() => Room.createOrGetByName('foo bar'))
+        it('accepts string as sprint name', function () {
+            assert.doesNotThrow(() => Sprint.createOrGetByName('foo bar'))
         })
 
-        it('always returns a room instance', function () {
-            const actual = Room.createOrGetByName('foo bar')
+        it('always returns a sprint instance', function () {
+            const actual = Sprint.createOrGetByName('foo bar')
 
-            assert(actual instanceof Room)
+            assert(actual instanceof Sprint)
         })
 
-        it('returns the created room if one is created', function () {
-            const actual = Room.createOrGetByName('foo bar')
+        it('returns the created sprint if one is created', function () {
+            const actual = Sprint.createOrGetByName('foo bar')
 
             assert.strictEqual(actual.name, 'foo bar')
         })
 
-        it('creates new room instance room and adds to internal Rooms pool', function () {
-            const room = Room.createOrGetByName('foo bar')
-            const roomFromPool = Room.rooms[0]
+        it('creates new sprint instance sprint and adds to internal sprints pool', function () {
+            const sprint = Sprint.createOrGetByName('foo bar')
+            const roomFromPool = Sprint.sprints[0]
 
-            assert.deepStrictEqual(room, roomFromPool)
+            assert.deepStrictEqual(sprint, roomFromPool)
         })
 
-        it('does not create new room if one with the same name already exists', function () {
-            const room1 = Room.createOrGetByName('foo bar')
-            const room2 = Room.createOrGetByName('foo bar')
+        it('does not create new sprint if one with the same name already exists', function () {
+            const room1 = Sprint.createOrGetByName('foo bar')
+            const room2 = Sprint.createOrGetByName('foo bar')
 
-            assert.strictEqual(Room.rooms.length, 1)
+            assert.strictEqual(Sprint.sprints.length, 1)
 
             assert.deepStrictEqual(room1, room2)
         })
     })
 
-    describe('class Room #getById', function () {
-        it('returns undefined if no room found by id', function () {
-            const actual = Room.getById('xxx')
+    describe('class Sprint #getById', function () {
+        it('returns undefined if no sprint found by id', function () {
+            const actual = Sprint.getById('xxx')
 
             assert.strictEqual(actual, undefined)
         })
 
-        it('returns room instance if found by id', function () {
-            const room = Room.createOrGetByName('bar foo')
-            const actual = Room.getById(room.id)
+        it('returns sprint instance if found by id', function () {
+            const sprint = Sprint.createOrGetByName('bar foo')
+            const actual = Sprint.getById(sprint.id)
 
-            assert.deepStrictEqual(actual, room)
+            assert.deepStrictEqual(actual, sprint)
         })
     })
 })

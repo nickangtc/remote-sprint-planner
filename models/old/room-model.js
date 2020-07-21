@@ -1,12 +1,12 @@
 const BaseModel = require('./base-model')
 const User = require('./user-model')
 
-class Room extends BaseModel {
+class Sprint extends BaseModel {
     constructor(name) {
         super()
 
         if (!name) {
-            throw new Error('room needs to be instantiated with a name')
+            throw new Error('sprint needs to be instantiated with a name')
         }
 
         this.users = []
@@ -14,34 +14,34 @@ class Room extends BaseModel {
     }
 
     static initRoomsPool() {
-        if (!Room.rooms) {
-            Room.rooms = []
+        if (!Sprint.sprints) {
+            Sprint.sprints = []
         }
     }
 
     static resetRoomsPool() {
-        Room.rooms = []
+        Sprint.sprints = []
     }
 
     static createOrGetByName(name) {
-        Room.initRoomsPool()
+        Sprint.initRoomsPool()
 
-        const existing = Room.rooms.find((r) => r.name === name)
+        const existing = Sprint.sprints.find((r) => r.name === name)
 
         if (existing) {
             return existing
         }
 
-        const created = new Room(name)
-        Room.rooms.push(created)
+        const created = new Sprint(name)
+        Sprint.sprints.push(created)
         return created
     }
 
     static getById(id) {
-        Room.initRoomsPool()
+        Sprint.initRoomsPool()
 
-        const room = Room.rooms.find((r) => r.id === id)
-        return room
+        const sprint = Sprint.sprints.find((r) => r.id === id)
+        return sprint
     }
 
     validateUser(user) {
@@ -79,4 +79,4 @@ class Room extends BaseModel {
     }
 }
 
-module.exports = Room
+module.exports = Sprint

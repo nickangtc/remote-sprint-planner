@@ -6,8 +6,7 @@ const socketio = require('socket.io')
 const http = require('http')
 
 const indexRouter = require('./routes/index-routes')
-const roomsRouter = require('./routes/rooms-routes')
-const { ConnectionsPool } = require('./models/connections-pool-model')
+const sprintsRouter = require('./routes/sprints-routes')
 
 const app = express()
 
@@ -22,7 +21,7 @@ app.set('view engine', 'hbs')
 app.locals.cPool = new ConnectionsPool()
 
 app.use('/', indexRouter)
-app.use('/rooms', roomsRouter)
+app.use('/sprints', sprintsRouter)
 app.use('*', (req, res) => {
     res.send('sorry, the only thing found here are these numbers: 404')
 })

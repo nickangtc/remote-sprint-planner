@@ -8,7 +8,7 @@ class VotableItem extends BaseModel {
             throw new Error('votableItem needs to be instantiated with a name')
         }
 
-        // item belongs to a room -> no need to store in votableItem ?
+        // item belongs to a sprint -> no need to store in votableItem ?
         this.name = name
         this.votes = []
         this.aggregatedVotes = {}
