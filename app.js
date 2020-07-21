@@ -2,6 +2,8 @@ const createError = require('http-errors')
 const express = require('express')
 const path = require('path')
 const logger = require('morgan')
+const socketio = require('socket.io')
+const http = require('http')
 
 const indexRouter = require('./routes/index-routes')
 const roomsRouter = require('./routes/rooms-routes')
@@ -41,4 +43,19 @@ app.use((err, req, res) => {
     res.send('error')
 })
 
-module.exports = app
+/**
+ * Init express server
+ */
+const server = http.createServer(app)
+
+const port = process.env.PORT || '8000'
+server.listen(port, () => console.log(`listening on: http://localhost:${port}`))
+
+/**
+ * Init Socket.io to receive and manage client connections
+ */
+const io = socketio(server)
+
+io.on('connect', (socket) => {
+    console.log(`New connection: (${socket.id})`)
+})

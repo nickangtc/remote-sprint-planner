@@ -4,7 +4,7 @@
   "description": "A little app to make remote sprint backlog estimation sessions more efficient and fun.",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon -e js,html ./bin/www",
+    "start": "nodemon -e js,html ./app.js",
     "test": "mocha"
   },
   "mocha": {
