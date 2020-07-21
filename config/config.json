@@ -1,0 +1,17 @@
+{
+  "development": {
+    "database": "remote-sprint-planner-development",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "database": "remote-sprint-planner-test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "database": "remote-sprint-planner-production",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
