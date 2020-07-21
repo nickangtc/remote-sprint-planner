@@ -45,6 +45,7 @@
     "http-errors": "^1.7.3",
     "lodash": "^4.17.15",
     "morgan": "^1.10.0",
-    "shortid": "^2.2.15"
+    "shortid": "^2.2.15",
+    "socket.io": "^2.3.0"
   }
 }
