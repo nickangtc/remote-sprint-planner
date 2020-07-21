@@ -35,3 +35,26 @@ More info on how `npx` works: https://blog.npmjs.org/post/162869356040/introduci
 ## Postico
 
 I recommend using this to visualise the database: https://eggerapps.at/postico/
+
+## Sequelize tips and tricks
+
+Sequelize queries return model instances, not just the raw JSON data from the database. To get raw, there are a few options:
+
+```js
+// Option 1: `raw: true` -> the simplest way but not always applicable
+await SprintItem.findOne({
+    where: {
+        id: 1,
+    },
+    raw: true
+})
+
+// Option 2: `instance.get({ plain: true })` -> useful when there are associations
+const sprintItem = await SprintItem.findOne({
+    where: {
+        id: 1,
+    },
+})
+
+const sprint = sprintItem.get({ plain: true })
+```
