@@ -2,6 +2,12 @@ const idRegex = /\/rooms\/(.*)/
 const id = window.location.pathname.match(idRegex)[1]
 console.log('id:', id)
 
+const socket = window.io()
+
+socket.on('connect', () => {
+    console.log('connected')
+})
+
 // get user-name input
 // check with server if name is taken
 // if not, proceed
