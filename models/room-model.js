@@ -77,10 +77,6 @@ class Room extends BaseModel {
     getUsers() {
         return this.users
     }
-
-    addVotableItem(votableItem) {}
-
-    getVotableItemById(votableItemId) {}
 }
 
 module.exports = Room
