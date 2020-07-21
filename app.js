@@ -23,7 +23,7 @@ app.locals.cPool = new ConnectionsPool()
 
 app.use('/', indexRouter)
 app.use('/rooms', roomsRouter)
-app.use('*', function (req, res) {
+app.use('*', (req, res) => {
     res.send('sorry, the only thing found here are these numbers: 404')
 })
 
@@ -52,7 +52,7 @@ const port = process.env.PORT || '8000'
 server.listen(port, () => console.log(`listening on: http://localhost:${port}`))
 
 /**
- * Init Socket.io to receive and manage client connections
+ * Init socket.io to receive and manage client connections
  */
 const io = socketio(server)
 
