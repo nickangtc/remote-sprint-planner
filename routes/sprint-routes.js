@@ -33,36 +33,27 @@ module.exports = function sprintsRoutes(io) {
     //     }
     // })
 
-    router.post('/:sprintId/votes', function (req, res) {
-        const { sprintId } = req.params
-        // const { cPool } = req.app.locals
+    // router.post('/:sprintId/votes', function (req, res) {
+    //     const { sprintId } = req.params
+    //     // const { cPool } = req.app.locals
 
-        // const cnts = cPool.getUserIdOfConnections(sprintId)
+    //     // const cnts = cPool.getUserIdOfConnections(sprintId)
 
-        cnts.forEach((cnt) => {
-            cnt.write(`event: vote\n`)
-            cnt.write(`data: ${JSON.stringify(req.body)}\n\n`)
-        })
-        res.json({
-            status: 'OK',
-        })
-    })
-
-    router.get('/:sprintId/subscribe', async function events(req, res) {
-        const { sprintId } = req.params
-        const { userSocketConnections } = req.app.locals
-
-        userSocketConnections.addConnection(sprintId, res)
-
-        console.log('sprintConnections.length:', sprintConnections.length)
-    })
+    //     cnts.forEach((cnt) => {
+    //         cnt.write(`event: vote\n`)
+    //         cnt.write(`data: ${JSON.stringify(req.body)}\n\n`)
+    //     })
+    //     res.json({
+    //         status: 'OK',
+    //     })
+    // })
 
     router.post('/', async function createSprint(req, res) {
         const sprintName = _.isEmpty(req.body['sprint-name'])
             ? utils.generateRandomName()
             : req.body['sprint-name']
 
-        const adminUserId = UserModelEnums.defaultAnonymousUser.id // TODO: implement in future
+        const adminUserId = UserModelEnums.defaultAnonymousUser.id
 
         const sprint = await Sprint.create({
             name: sprintName,
@@ -99,10 +90,7 @@ module.exports = function sprintsRoutes(io) {
         console.log(`New connection: (${socket.id})`)
 
         userSocketConnections.addConnection(socket.id, undefined)
-        console.log(
-            'userSocketConnections.store:',
-            JSON.stringify(userSocketConnections.store, null, 4)
-        )
+        console.log(JSON.stringify(userSocketConnections.store, null, 4))
 
         socket.on('disconnecting', () => {
             console.log(`Destroying connection: (${socket.id})`)
@@ -114,10 +102,7 @@ module.exports = function sprintsRoutes(io) {
             )
 
             userSocketConnections.removeConnection(socket.id)
-            console.log(
-                'userSocketConnections.store:',
-                JSON.stringify(userSocketConnections.store, null, 4)
-            )
+            console.log(JSON.stringify(userSocketConnections.store, null, 4))
 
             sprintIds.forEach((sprintId) => {
                 io.to(sprintId).emit('disconnected', userId)
@@ -136,7 +121,6 @@ module.exports = function sprintsRoutes(io) {
                 userId,
             }
 
-            // TODO: update socket with userId
             userSocketConnections.updateConnection(socket.id, userId)
 
             console.log(
@@ -147,7 +131,26 @@ module.exports = function sprintsRoutes(io) {
             // join socket's internally named room
             socket.join(sprintId)
 
+            const socketIdsInSprint = Object.keys(
+                io.sockets.adapter.rooms[sprintId].sockets
+            )
+            const userIdsInSprint = socketIdsInSprint.map((sid) => {
+                return userSocketConnections.getUserIdOfConnection(sid)
+            })
+
+            console.log(
+                'socketIdsInSprint:',
+                JSON.stringify(socketIdsInSprint, null, 4)
+            )
+
+            // TODO: this should send an array of user objects not just userIds
+            // TODO: so that newly joined user can display all usernames in active users list
+            console.log('userIdsInSprint:', userIdsInSprint)
+
             io.to(sprintId).emit('joined', tempUser)
+
+            // TODO: send newly joined user the latest state, especially active users list
+            // io.to(sprintId).emit('refreshState', )
         })
     })
 

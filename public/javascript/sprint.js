@@ -5,39 +5,46 @@ console.log('sprintId:', sprintId)
 const socket = window.io()
 
 socket.on('connect', () => {
+    // this client is connected to server
     console.log('connected')
 })
 
 socket.on('joined', (user) => {
+    // a new client (not this one) has joined the room
     console.log('joined:', user)
 })
 
 socket.on('disconnected', (userId) => {
+    // a new client (not this one) has disconnected from the room
     console.log('user disconnected:', userId)
 })
 
-// get user-name input
-// check with server if name is taken
-// if not, proceed
-// if yes, prompt user for new user-name
-async function postUser(username) {
-    const url = '/users'
-    const data = { username }
+socket.on('refreshState', (data) => {
+    const { users } = data
 
-    const response = await fetch(url, {
-        method: 'POST',
-        mode: 'cors',
-        cache: 'no-cache',
-        credentials: 'same-origin',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        redirect: 'follow',
-        referrerPolicy: 'no-referrer',
-        body: JSON.stringify(data),
-    })
-    return response
-}
+    if (users) {
+        // update active users list
+    }
+})
+
+// async function postUser(username) {
+//     const url = '/users'
+//     const data = { username }
+
+//     const response = await fetch(url, {
+//         method: 'POST',
+//         mode: 'cors',
+//         cache: 'no-cache',
+//         credentials: 'same-origin',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         redirect: 'follow',
+//         referrerPolicy: 'no-referrer',
+//         body: JSON.stringify(data),
+//     })
+//     return response
+// }
 
 // vote code
 async function postVote(username, votevalue) {
@@ -60,24 +67,6 @@ async function postVote(username, votevalue) {
         body: JSON.stringify(data),
     })
     return response.json()
-}
-
-function connect() {
-    const evtSource = new EventSource(`/sprints/${id}/subscribe`)
-
-    evtSource.onerror = function onerror(err) {
-        console.error('EventSource failed:', err)
-    }
-
-    // when user closes the browser tab / etc, close event source
-    // evtSource.close()
-
-    evtSource.addEventListener('vote', (event) => {
-        const newElement = document.createElement('li')
-        const eventList = document.getElementById('list')
-        newElement.innerHTML = `${event.data}`
-        eventList.appendChild(newElement)
-    })
 }
 
 function displayEphemeralMessage(message) {
@@ -114,22 +103,14 @@ window.addEventListener('DOMContentLoaded', () => {
 
         socket.emit('join', { username, sprintId })
 
-        if (res.status === 403) {
-            displayEphemeralMessage(res.statusText)
-        } else {
-            connect()
+        // const usersOnline = await res.json()
+        // displayUsersOnlineList(usersOnline.map((usr) => usr.username))
 
-            displayEphemeralMessage('')
+        usernameForm.classList.add('d-none')
 
-            const usersOnline = await res.json()
-            displayUsersOnlineList(usersOnline.map((usr) => usr.username))
-
-            usernameForm.classList.add('d-none')
-
-            userSignupUiGroup.classList.remove('d-none')
-            usersOnlineUiGroup.classList.remove('d-none')
-            voteUiGroup.classList.remove('d-none')
-        }
+        userSignupUiGroup.classList.remove('d-none')
+        usersOnlineUiGroup.classList.remove('d-none')
+        // voteUiGroup.classList.remove('d-none')
     })
 
     const buttons = document.querySelectorAll('#vote-buttons button')

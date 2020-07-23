@@ -9,6 +9,7 @@ class SocketConnectionsStore {
     }
 
     addConnection(socketId, userId = 'nameless user') {
+        // TODO: this should store user as object { userId, username }
         console.log('-> stored new connection')
         this.store[socketId] = userId
     }
