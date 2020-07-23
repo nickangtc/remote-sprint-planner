@@ -6,7 +6,8 @@ const socketio = require('socket.io')
 const http = require('http')
 
 const indexRouter = require('./routes/index-routes')
-const sprintsRouter = require('./routes/sprints-routes')
+const sprintRouter = require('./routes/sprint-routes')
+const userRouter = require('./routes/user-routes')
 
 const app = express()
 
@@ -32,7 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.set('view engine', 'hbs')
 
 app.use('/', indexRouter)
-app.use('/sprints', sprintsRouter(io))
+app.use('/users', userRouter)
+app.use('/sprints', sprintRouter(io))
 app.use('*', (req, res) => {
     res.send('sorry, the only thing found here are these numbers: 404')
 })

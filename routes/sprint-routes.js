@@ -1,5 +1,6 @@
 const express = require('express')
 const _ = require('lodash')
+const shortid = require('shortid')
 
 const { User, Sprint, SprintItem } = require('../models')
 const { UserModelEnums } = require('../enums/model-enums')
@@ -14,23 +15,23 @@ const userSocketConnections = new SocketConnectionsStore()
 
 module.exports = function sprintsRoutes(io) {
     // TODO: decide also how to store Votes in a sprint
-    router.post('/:sprintId/users', function (req, res) {
-        const { username } = req.body
-        const { sprintId } = req.params
+    // router.post('/:sprintId/users', function (req, res) {
+    //     const { username } = req.body
+    //     const { sprintId } = req.params
 
-        const sprint = Sprint.getById(sprintId)
+    //     const sprint = Sprint.getById(sprintId)
 
-        try {
-            sprint.addUser(new User(username))
-            res.statusMessage = 'OK'
-            res.status(200)
-            res.json(sprint.users)
-        } catch (err) {
-            res.statusMessage =
-                'Error: That username is already taken. Try with a different one.'
-            res.status(403).end()
-        }
-    })
+    //     try {
+    //         sprint.addUser(new User(username))
+    //         res.statusMessage = 'OK'
+    //         res.status(200)
+    //         res.json(sprint.users)
+    //     } catch (err) {
+    //         res.statusMessage =
+    //             'Error: That username is already taken. Try with a different one.'
+    //         res.status(403).end()
+    //     }
+    // })
 
     router.post('/:sprintId/votes', function (req, res) {
         const { sprintId } = req.params
@@ -103,8 +104,18 @@ module.exports = function sprintsRoutes(io) {
             console.log(`Destroying connection: (${socket.id})`)
             userSocketConnections.removeConnection(socket.id)
         })
+
+        socket.on('join', (data) => {
+            const { username, sprintId } = data
+
+            const tempUser = {
+                username,
+                id: shortid.generate(),
+            }
+
+            socket.emit('joined', tempUser)
+        })
     })
 
     return router
 }
-

@@ -1,6 +1,6 @@
 const idRegex = /\/sprints\/(.*)/
-const id = window.location.pathname.match(idRegex)[1]
-console.log('id:', id)
+const sprintId = window.location.pathname.match(idRegex)[1]
+console.log('sprintId:', sprintId)
 
 const socket = window.io()
 
@@ -8,12 +8,16 @@ socket.on('connect', () => {
     console.log('connected')
 })
 
+socket.on('joined', (user) => {
+    console.log('joined:', user)
+})
+
 // get user-name input
 // check with server if name is taken
 // if not, proceed
 // if yes, prompt user for new user-name
 async function postUser(username) {
-    const url = `${id}/users`
+    const url = '/users'
     const data = { username }
 
     const response = await fetch(url, {
@@ -33,7 +37,7 @@ async function postUser(username) {
 
 // vote code
 async function postVote(username, votevalue) {
-    const url = `${id}/votes`
+    const url = `${sprintId}/votes`
     const data = {
         username,
         votevalue,
@@ -104,7 +108,7 @@ window.addEventListener('DOMContentLoaded', () => {
         // this is the most direct and readable code to access a form's specific input element's value
         const username = target.elements.username.value
 
-        const res = await postUser(username)
+        socket.emit('join', { username, sprintId })
 
         if (res.status === 403) {
             displayEphemeralMessage(res.statusText)
