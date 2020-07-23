@@ -10,6 +10,20 @@ const sprintsRouter = require('./routes/sprints-routes')
 
 const app = express()
 
+/**
+ * Init express server
+ */
+const server = http.createServer(app)
+
+const port = process.env.PORT || '8000'
+server.listen(port, () => console.log(`listening on: http://localhost:${port}`))
+
+/**
+ * Init socket.io to receive and manage client connections
+ */
+const io = socketio(server)
+app.locals.io = io
+
 app.use(logger('dev'))
 app.use(express.json({ limit: '10mb', extended: true }))
 app.use(express.urlencoded({ extended: false }))
@@ -18,7 +32,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.set('view engine', 'hbs')
 
 app.use('/', indexRouter)
-app.use('/sprints', sprintsRouter)
+app.use('/sprints', sprintsRouter(io))
 app.use('*', (req, res) => {
     res.send('sorry, the only thing found here are these numbers: 404')
 })
@@ -39,19 +53,3 @@ app.use((err, req, res) => {
     res.send('error')
 })
 
-/**
- * Init express server
- */
-const server = http.createServer(app)
-
-const port = process.env.PORT || '8000'
-server.listen(port, () => console.log(`listening on: http://localhost:${port}`))
-
-/**
- * Init socket.io to receive and manage client connections
- */
-const io = socketio(server)
-
-io.on('connect', (socket) => {
-    console.log(`New connection: (${socket.id})`)
-})

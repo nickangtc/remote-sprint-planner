@@ -9,6 +9,9 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
+            Sprint.belongsTo(models.User, {
+                foreignKey: 'AdminUserId',
+            })
         }
     }
     Sprint.init(

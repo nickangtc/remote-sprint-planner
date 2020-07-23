@@ -1,1 +1,4 @@
 node_modules
+
+# sequelize testing on local only
+st.js

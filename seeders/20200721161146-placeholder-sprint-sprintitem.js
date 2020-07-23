@@ -1,9 +1,14 @@
+const { UserModelEnums } = require('../enums/model-enums')
+
+const { defaultAnonymousUser } = UserModelEnums
+
 module.exports = {
     up: async (queryInterface, Sequelize) => {
         await queryInterface.bulkInsert('Sprints', [
             {
                 id: 1,
                 name: 'Adam Eve sprint',
+                AdminUserId: defaultAnonymousUser.id,
                 isCompleted: false,
                 createdAt: new Date(),
                 updatedAt: new Date(),
