@@ -37,7 +37,7 @@ module.exports = function sprintsRoutes(io) {
         const { sprintId } = req.params
         // const { cPool } = req.app.locals
 
-        // const cnts = cPool.getConnections(sprintId)
+        // const cnts = cPool.getUserIdOfConnections(sprintId)
 
         cnts.forEach((cnt) => {
             cnt.write(`event: vote\n`)
@@ -99,21 +99,55 @@ module.exports = function sprintsRoutes(io) {
         console.log(`New connection: (${socket.id})`)
 
         userSocketConnections.addConnection(socket.id, undefined)
+        console.log(
+            'userSocketConnections.store:',
+            JSON.stringify(userSocketConnections.store, null, 4)
+        )
 
-        socket.on('disconnect', () => {
+        socket.on('disconnecting', () => {
             console.log(`Destroying connection: (${socket.id})`)
+
+            const sprintIds = Object.keys(socket.rooms)
+
+            const userId = userSocketConnections.getUserIdOfConnection(
+                socket.id
+            )
+
             userSocketConnections.removeConnection(socket.id)
+            console.log(
+                'userSocketConnections.store:',
+                JSON.stringify(userSocketConnections.store, null, 4)
+            )
+
+            sprintIds.forEach((sprintId) => {
+                io.to(sprintId).emit('disconnected', userId)
+            })
         })
 
         socket.on('join', (data) => {
             const { username, sprintId } = data
 
+            console.log('\nsprintId:', sprintId)
+
+            const userId = shortid.generate()
+
             const tempUser = {
                 username,
-                id: shortid.generate(),
+                userId,
             }
 
-            socket.emit('joined', tempUser)
+            // TODO: update socket with userId
+            userSocketConnections.updateConnection(socket.id, userId)
+
+            console.log(
+                'userSocketConnections.store:',
+                JSON.stringify(userSocketConnections.store, null, 4)
+            )
+
+            // join socket's internally named room
+            socket.join(sprintId)
+
+            io.to(sprintId).emit('joined', tempUser)
         })
     })
 

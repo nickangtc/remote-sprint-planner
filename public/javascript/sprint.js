@@ -12,6 +12,10 @@ socket.on('joined', (user) => {
     console.log('joined:', user)
 })
 
+socket.on('disconnected', (userId) => {
+    console.log('user disconnected:', userId)
+})
+
 // get user-name input
 // check with server if name is taken
 // if not, proceed
