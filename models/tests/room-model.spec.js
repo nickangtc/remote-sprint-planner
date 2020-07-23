@@ -135,18 +135,18 @@ describe('Sprint', function () {
 
         it('creates new sprint instance sprint and adds to internal sprints pool', function () {
             const sprint = Sprint.createOrGetByName('foo bar')
-            const roomFromPool = Sprint.sprints[0]
+            const sprintFromPool = Sprint.sprints[0]
 
-            assert.deepStrictEqual(sprint, roomFromPool)
+            assert.deepStrictEqual(sprint, sprintFromPool)
         })
 
         it('does not create new sprint if one with the same name already exists', function () {
-            const room1 = Sprint.createOrGetByName('foo bar')
-            const room2 = Sprint.createOrGetByName('foo bar')
+            const sprint1 = Sprint.createOrGetByName('foo bar')
+            const sprint2 = Sprint.createOrGetByName('foo bar')
 
             assert.strictEqual(Sprint.sprints.length, 1)
 
-            assert.deepStrictEqual(room1, room2)
+            assert.deepStrictEqual(sprint1, sprint2)
         })
     })
 

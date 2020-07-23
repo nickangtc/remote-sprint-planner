@@ -13,11 +13,11 @@ const sseHeaders = {
 }
 
 // TODO: decide also how to store Votes in a sprint
-router.post('/:roomId/users', function (req, res) {
+router.post('/:sprintId/users', function (req, res) {
     const { username } = req.body
-    const { roomId } = req.params
+    const { sprintId } = req.params
 
-    const sprint = Sprint.getById(roomId)
+    const sprint = Sprint.getById(sprintId)
 
     try {
         sprint.addUser(new User(username))
@@ -31,11 +31,11 @@ router.post('/:roomId/users', function (req, res) {
     }
 })
 
-router.post('/:roomId/votes', function (req, res) {
-    const { roomId } = req.params
-    const { cPool } = req.app.locals
+router.post('/:sprintId/votes', function (req, res) {
+    const { sprintId } = req.params
+    // const { cPool } = req.app.locals
 
-    const cnts = cPool.getConnections(roomId)
+    // const cnts = cPool.getConnections(sprintId)
 
     cnts.forEach((cnt) => {
         cnt.write(`event: vote\n`)
@@ -46,42 +46,54 @@ router.post('/:roomId/votes', function (req, res) {
     })
 })
 
-router.get('/:roomId/subscribe', async function events(req, res) {
-    const { roomId } = req.params
-    const { cPool } = req.app.locals
+router.get('/:sprintId/subscribe', async function events(req, res) {
+    const { sprintId } = req.params
+    // const { cPool } = req.app.locals
     res.set(sseHeaders)
     res.flushHeaders()
 
     // Tell the client to retry every 10 seconds if connectivity is lost
     res.write('retry: 10000\n\n')
 
-    cPool.addConnection(roomId, res)
+    // cPool.addConnection(sprintId, res)
 
     req.on('close', () => {
         console.log('a connection closed')
-        cPool.removeConnection(roomId, res)
+        // cPool.removeConnection(sprintId, res)
     })
 
-    const roomConnections = cPool.getConnections(roomId)
-    console.log('roomConnections.length:', roomConnections.length)
+    // const sprintConnections = cPool.getConnections(sprintId)
+    console.log('sprintConnections.length:', sprintConnections.length)
 })
 
-router.post('/', function postRoom(req, res) {
-    const roomName = _.isEmpty(req.body['sprint-name'])
+router.post('/', async function createSprint(req, res) {
+    const sprintName = _.isEmpty(req.body['sprint-name'])
         ? utils.generateRandomName()
         : req.body['sprint-name']
 
-    const sprint = Sprint.createOrGetByName(roomName)
+    // const sprint = Sprint.createOrGetByName(sprintName)
+    const sprint = await Sprint.create({
+        name: sprintName,
+        isCompleted: false,
+    })
 
     res.redirect(`/sprints/${sprint.id}`)
 })
 
-router.get('/:roomId', function getRoom(req, res) {
-    const { roomId } = req.params
-    const sprint = Sprint.getById(roomId)
+router.get('/:sprintId', async function getSprint(req, res) {
+    const { sprintId } = req.params
+    const sprint = await Sprint.findOne({
+        where: {
+            id: sprintId,
+        },
+    })
 
     if (!sprint) {
         res.redirect('/')
+    } else if (sprint.isCompleted) {
+        res.send(
+            "hmm, the sprint planning session you're looking for has already completed."
+        )
     } else {
         res.render('sprint', { id: sprint.id, name: sprint.name })
     }

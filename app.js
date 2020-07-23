@@ -17,9 +17,6 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.set('view engine', 'hbs')
 
-// client connections for server sent events (EventSource API)
-app.locals.cPool = new ConnectionsPool()
-
 app.use('/', indexRouter)
 app.use('/sprints', sprintsRouter)
 app.use('*', (req, res) => {
