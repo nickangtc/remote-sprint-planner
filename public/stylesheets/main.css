@@ -11,6 +11,10 @@
   min-width: 3rem;
 }
 
+button#start {
+  margin-bottom: 1rem;
+}
+
 @keyframes fade {
   0% { opacity: 0 }
   100% { opacity: 1 }
