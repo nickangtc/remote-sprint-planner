@@ -14,40 +14,6 @@ const router = express.Router()
 const userSocketConnections = new SocketConnectionsStore()
 
 module.exports = function sprintsRoutes(io) {
-    // TODO: decide also how to store Votes in a sprint
-    // router.post('/:sprintId/users', function (req, res) {
-    //     const { username } = req.body
-    //     const { sprintId } = req.params
-
-    //     const sprint = Sprint.getById(sprintId)
-
-    //     try {
-    //         sprint.addUser(new User(username))
-    //         res.statusMessage = 'OK'
-    //         res.status(200)
-    //         res.json(sprint.users)
-    //     } catch (err) {
-    //         res.statusMessage =
-    //             'Error: That username is already taken. Try with a different one.'
-    //         res.status(403).end()
-    //     }
-    // })
-
-    // router.post('/:sprintId/votes', function (req, res) {
-    //     const { sprintId } = req.params
-    //     // const { cPool } = req.app.locals
-
-    //     // const cnts = cPool.getUserIdOfConnections(sprintId)
-
-    //     cnts.forEach((cnt) => {
-    //         cnt.write(`event: vote\n`)
-    //         cnt.write(`data: ${JSON.stringify(req.body)}\n\n`)
-    //     })
-    //     res.json({
-    //         status: 'OK',
-    //     })
-    // })
-
     router.post('/', async function createSprint(req, res) {
         const sprintName = _.isEmpty(req.body['sprint-name'])
             ? utils.generateRandomName()
@@ -87,7 +53,7 @@ module.exports = function sprintsRoutes(io) {
      * socket.io event handlers
      */
     io.on('connect', (socket) => {
-        console.log(`New connection: (${socket.id})`)
+        console.log(`-> new connection: (${socket.id})`)
 
         userSocketConnections.addConnection(socket.id, undefined)
         console.log(JSON.stringify(userSocketConnections.store, null, 4))
@@ -112,8 +78,6 @@ module.exports = function sprintsRoutes(io) {
         socket.on('join', (data) => {
             const { username, sprintId } = data
 
-            console.log('\nsprintId:', sprintId)
-
             const userId = shortid.generate()
 
             const tempUser = {
@@ -123,10 +87,7 @@ module.exports = function sprintsRoutes(io) {
 
             userSocketConnections.updateConnection(socket.id, userId)
 
-            console.log(
-                'userSocketConnections.store:',
-                JSON.stringify(userSocketConnections.store, null, 4)
-            )
+            console.log(JSON.stringify(userSocketConnections.store, null, 4))
 
             // join socket's internally named room
             socket.join(sprintId)
@@ -137,11 +98,6 @@ module.exports = function sprintsRoutes(io) {
             const userIdsInSprint = socketIdsInSprint.map((sid) => {
                 return userSocketConnections.getUserIdOfConnection(sid)
             })
-
-            console.log(
-                'socketIdsInSprint:',
-                JSON.stringify(socketIdsInSprint, null, 4)
-            )
 
             // TODO: this should send an array of user objects not just userIds
             // TODO: so that newly joined user can display all usernames in active users list
