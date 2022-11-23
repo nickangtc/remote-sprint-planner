@@ -50,6 +50,6 @@
     "sequelize": "^6.3.3",
     "sequelize-cli": "^6.2.0",
     "shortid": "^2.2.15",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.5.0"
   }
 }
